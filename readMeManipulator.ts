@@ -2,11 +2,11 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 import * as commonmark from "commonmark"
-import { commonmarkToString } from "commonmark-to-markdown"
 import { ReadMeBuilder } from './readMeBuilder'
 import { Logger } from './logger'
 import * as yaml from 'js-yaml'
 import { base64ToString } from './gitHubUtils';
+import { MarkDownEx, markDownExToString } from "@ts-common/commonmark-to-markdown"
 
 /**
  * Provides operations that can be applied to readme files
@@ -17,7 +17,8 @@ export class ReadMeManipulator {
     /**
      * Updates the latest version tag of a readme
      */
-    public updateLatestTag(startNode: commonmark.Node, newTag: string): string {
+    public updateLatestTag(markDownEx: MarkDownEx, newTag: string): string {
+        const startNode = markDownEx.markDown
         const codeBlockMap = getCodeBlocksAndHeadings(startNode);
 
         const latestHeader = "Basic Information";
@@ -37,7 +38,7 @@ export class ReadMeManipulator {
             lineWidth: -1
         });
 
-        return commonmarkToString(startNode);
+        return markDownExToString(markDownEx);
     }
 
     public stringToTree(str: string): commonmark.Node {

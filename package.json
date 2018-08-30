@@ -29,14 +29,14 @@
   "devDependencies": {
     "@types/commonmark": "^0.27.0",
     "@types/js-yaml": "^3.11.2",
-    "@types/node": "^10.9.3",
+    "@types/node": "^10.9.4",
     "mocha": "^5.2.0",
     "nyc": "^13.0.1",
     "typescript": "^3.0.3"
   },
   "dependencies": {
+    "@ts-common/commonmark-to-markdown": "^1.1.1",
     "commonmark": "^0.28.1",
-    "commonmark-to-markdown": " 0.0.1",
     "js-yaml": "^3.12.0"
   }
 }
