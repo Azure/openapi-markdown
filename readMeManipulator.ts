@@ -8,6 +8,13 @@ import * as yaml from 'js-yaml'
 import { base64ToString } from './gitHubUtils';
 import { MarkDownEx, markDownExToString } from "@ts-common/commonmark-to-markdown"
 
+export interface SuppressionItem {
+    suppress: string;
+    reason?: string;
+    where: string;
+    from: string;
+}
+
 /**
  * Provides operations that can be applied to readme files
  */
@@ -66,6 +73,29 @@ export class ReadMeManipulator {
 
         return spliceIntoTopOfVersions(readmeContent, toSplice);
     }
+
+    public addSuppression(
+        startNode: commonmark.Node,
+        item: SuppressionItem
+      ): void {
+        const mapping = getCodeBlocksAndHeadings(startNode);
+        const suppressionNode = mapping.Suppression;
+        const suppressionBlock = getYamlFromNode(mapping.Suppression);
+        const updatedSuppressionBlock = {
+          ...suppressionBlock,
+          directive: [...suppressionBlock.directive, item]
+        };
+        updateYamlForNode(suppressionNode, updatedSuppressionBlock);
+      }
+}
+
+const getYamlFromNode = (node: commonmark.Node) => {
+    const infoYaml: any = yaml.load(node.literal!);
+    return infoYaml;
+}
+
+const updateYamlForNode = (node: commonmark.Node, yamlObject: any): void => {
+    node.literal = yaml.dump(yamlObject, { lineWidth: -1 });
 }
 
 const spliceIntoTopOfVersions = (file: string, splice: string) => {
@@ -77,7 +107,7 @@ const createTagDefinitionYaml = (files: string[]) => ({
     ["input-file"]: files
 });
 
-const getCodeBlocksAndHeadings = (
+export const getCodeBlocksAndHeadings = (
     startNode: commonmark.Node
 ): { [key: string]: commonmark.Node } => {
     return getAllCodeBlockNodes(startNode).reduce(
