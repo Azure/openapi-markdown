@@ -1,7 +1,6 @@
 import "mocha"
 
 import * as chai from "chai"
-// import * as commonmark from "commonmark"
 import * as cm2md from "@ts-common/commonmark-to-markdown"
 
 import { ReadMeBuilder } from "../readMeBuilder"
@@ -50,8 +49,6 @@ const logger: Logger = {
 
 describe("@fast ReadmeManipulator.updateVersionTag", () => {
   it("should correctly update readme", async () => {
-    // const walker = parsed.markDown.walker();
-
     const rm = new ReadMeManipulator(logger, readmeBuilder);
 
     const updated = rm.updateLatestTag(parsed, "package-2018-10");
@@ -60,10 +57,6 @@ describe("@fast ReadmeManipulator.updateVersionTag", () => {
   });
 
   it("should correctly update readme", async () => {
-    // const rm = new ReadMeManipulator(logger, readmeBuilder);
-
-    // const walker = parsed.markDown.walker();
-
     const asa = await getCodeBlocksAndHeadings(parsed.markDown);
     chai
       .expect(asa)
@@ -143,8 +136,6 @@ input-file:
     );
 
     const rm = new ReadMeManipulator(logger, readmeBuilder);
-
-    // const walker = asdf.markDown.walker();
 
     const testSuppression = {
       suppress: "AsLky90MubsiXGRHGjAMKzEtTuuKUDCUhHPQNTk",
