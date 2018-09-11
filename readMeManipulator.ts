@@ -2,17 +2,17 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 import * as commonmark from "commonmark"
-import { ReadMeBuilder } from './readMeBuilder'
-import { Logger } from './logger'
-import * as yaml from 'js-yaml'
-import { base64ToString } from './gitHubUtils';
+import { ReadMeBuilder } from "./readMeBuilder"
+import { Logger } from "./logger"
+import * as yaml from "js-yaml"
+import { base64ToString } from "./gitHubUtils"
 import { MarkDownEx, markDownExToString, parse } from "@ts-common/commonmark-to-markdown"
 
 export interface SuppressionItem {
-    suppress: string;
-    reason?: string;
-    where: string;
-    from: string;
+    suppress: string
+    reason?: string
+    where: string
+    from: string
 }
 
 /**
@@ -26,36 +26,26 @@ export class ReadMeManipulator {
      */
     public updateLatestTag(markDownEx: MarkDownEx, newTag: string): string {
         const startNode = markDownEx.markDown
-        const codeBlockMap = getCodeBlocksAndHeadings(startNode);
+        const codeBlockMap = getCodeBlocksAndHeadings(startNode)
 
-        const latestHeader = "Basic Information";
+        const latestHeader = "Basic Information"
 
         const latestDefinition = yaml.load(codeBlockMap[latestHeader].literal!) as
             | undefined
-            | { tag: string };
+            | { tag: string }
 
         if (!latestDefinition) {
-            this.logger.error(`Couldn't parse code block`);
-            throw new Error("");
+            this.logger.error(`Couldn't parse code block`)
+            throw new Error("")
         }
 
-        latestDefinition.tag = newTag;
+        latestDefinition.tag = newTag
 
         codeBlockMap[latestHeader].literal = yaml.dump(latestDefinition, {
             lineWidth: -1
-        });
+        })
 
-        return markDownExToString(markDownEx);
-    }
-
-    public stringToTree(str: string): commonmark.Node {
-        const reader = new commonmark.Parser();
-        return reader.parse(str);
-    }
-
-    public base64ToTree(base: string): MarkDownEx {
-        const str = base64ToString(base);
-        return parse(str)
+        return markDownExToString(markDownEx)
     }
 
     public insertTagDefinition(
@@ -63,56 +53,66 @@ export class ReadMeManipulator {
         tagFiles: string[],
         newTag: string
     ) {
-        const newTagDefinitionYaml = createTagDefinitionYaml(tagFiles);
+        const newTagDefinitionYaml = createTagDefinitionYaml(tagFiles)
 
         const toSplice = this.readMeBuilder.getVersionDefinition(
             newTagDefinitionYaml,
             newTag
-        );
+        )
 
-        return spliceIntoTopOfVersions(readmeContent, toSplice);
-    }
-
-    public addSuppression(
-        startNode: commonmark.Node,
-        item: SuppressionItem
-    ): void {
-        const mapping = getCodeBlocksAndHeadings(startNode);
-        const suppressionNode = mapping.Suppression;
-        const suppressionBlock = getYamlFromNode(mapping.Suppression);
-        const updatedSuppressionBlock = {
-            ...suppressionBlock,
-            directive: [...suppressionBlock.directive, item]
-        };
-        updateYamlForNode(suppressionNode, updatedSuppressionBlock);
+        return spliceIntoTopOfVersions(readmeContent, toSplice)
     }
 
     public addSuppressionBlock(readme: string) {
-        return `${readme}\n\n${this.readMeBuilder.getSuppressionSection()}`;
+        return `${readme}\n\n${this.readMeBuilder.getSuppressionSection()}`
     }
 }
 
+export const addSuppression = (
+    startNode: commonmark.Node,
+    item: SuppressionItem
+): void => {
+    const mapping = getCodeBlocksAndHeadings(startNode)
+    const suppressionNode = mapping.Suppression
+    const suppressionBlock = getYamlFromNode(mapping.Suppression)
+    const updatedSuppressionBlock = {
+        ...suppressionBlock,
+        directive: [...suppressionBlock.directive, item]
+    }
+    updateYamlForNode(suppressionNode, updatedSuppressionBlock)
+}
+
+export const stringToTree = (str: string): commonmark.Node => {
+    const reader = new commonmark.Parser()
+    return reader.parse(str)
+}
+
+export const base64ToTree = (base: string): MarkDownEx => {
+    const str = base64ToString(base)
+    return parse(str)
+}
+
 const getYamlFromNode = (node: commonmark.Node) => {
-    const infoYaml: any = yaml.load(node.literal!);
-    return infoYaml;
+    const infoYaml: any = yaml.load(node.literal!)
+    return infoYaml
 }
 
 const updateYamlForNode = (node: commonmark.Node, yamlObject: any): void => {
-    node.literal = yaml.dump(yamlObject, { lineWidth: -1 });
+    node.literal = yaml.dump(yamlObject, { lineWidth: -1 })
 }
 
 const spliceIntoTopOfVersions = (file: string, splice: string) => {
-    const index = file.indexOf("### Tag");
-    return file.slice(0, index) + splice + file.slice(index);
+    const index = file.indexOf("### Tag")
+    return file.slice(0, index) + splice + file.slice(index)
 }
 
 const createTagDefinitionYaml = (files: string[]) => ({
     ["input-file"]: files
-});
+})
 
 export const hasSuppressionBlock = (startNode: commonmark.Node) => {
-    const mapping = getCodeBlocksAndHeadings(startNode);
-    return !!mapping.Suppression;
+    const mapping = getCodeBlocksAndHeadings(startNode)
+    return !!mapping.Suppression
 }
 
 export const getCodeBlocksAndHeadings = (
@@ -120,31 +120,31 @@ export const getCodeBlocksAndHeadings = (
 ): { [key: string]: commonmark.Node } => {
     return getAllCodeBlockNodes(startNode).reduce(
         (acc, curr) => {
-            const headingNode = nodeHeading(curr);
+            const headingNode = nodeHeading(curr)
 
             if (!headingNode) {
-                return { ...acc };
+                return { ...acc }
             }
 
             const headingLiteral = getHeadingLiteral(headingNode);
 
             if (!headingLiteral) {
-                return { ...acc };
+                return { ...acc }
             }
 
-            return { ...acc, [headingLiteral]: curr };
+            return { ...acc, [headingLiteral]: curr }
         },
         {}
-    );
+    )
 }
 
 const getHeadingLiteral = (heading: commonmark.Node): string => {
     const headingNode = walkToNode(
         heading.walker(),
         n => n.type === "text"
-    );
+    )
 
-    return headingNode && headingNode.literal ? headingNode.literal : "";
+    return headingNode && headingNode.literal ? headingNode.literal : ""
 }
 
 const getAllCodeBlockNodes = (startNode: commonmark.Node) => {

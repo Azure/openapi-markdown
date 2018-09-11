@@ -4,7 +4,7 @@ import * as chai from "chai"
 import * as cm2md from "@ts-common/commonmark-to-markdown"
 
 import { ReadMeBuilder } from "../readMeBuilder"
-import { ReadMeManipulator, getCodeBlocksAndHeadings } from "../readMeManipulator"
+import { ReadMeManipulator, getCodeBlocksAndHeadings, addSuppression } from "../readMeManipulator"
 import { Logger } from '../logger';
 
 // const reader = new commonmark.Parser();
@@ -135,8 +135,6 @@ input-file:
 `)
     );
 
-    const rm = new ReadMeManipulator(logger, readmeBuilder);
-
     const testSuppression = {
       suppress: "AsLky90MubsiXGRHGjAMKzEtTuuKUDCUhHPQNTk",
       from: "lUmVYo1ZAowYnYUdSOmf8",
@@ -144,7 +142,7 @@ input-file:
       reason: "asdfasdFAsdf"
     };
 
-    rm.addSuppression(asdf.markDown, testSuppression);
+    addSuppression(asdf.markDown, testSuppression);
     const asa = await cm2md.markDownExToString(asdf);
     chai.expect(asa).to.include(testSuppression.suppress);
     chai.expect(asa).to.include(testSuppression.reason);
