@@ -30,7 +30,12 @@ export class ReadMeManipulator {
 
         const latestHeader = "Basic Information"
 
-        const latestDefinition = yaml.load(codeBlockMap[latestHeader].literal!) as
+        const lh = codeBlockMap[latestHeader]
+        if (lh === undefined) {
+            this.logger.error(`Couldn't parse code block`)
+            throw new Error("")
+        }
+        const latestDefinition = yaml.load(lh.literal!) as
             | undefined
             | { tag: string }
 
@@ -41,7 +46,7 @@ export class ReadMeManipulator {
 
         latestDefinition.tag = newTag
 
-        codeBlockMap[latestHeader].literal = yaml.dump(latestDefinition, {
+        lh.literal = yaml.dump(latestDefinition, {
             lineWidth: -1
         })
 
@@ -74,7 +79,11 @@ export const addSuppression = (
 ): void => {
     const mapping = getCodeBlocksAndHeadings(startNode)
     const suppressionNode = mapping.Suppression
-    const suppressionBlock = getYamlFromNode(mapping.Suppression)
+    if (suppressionNode === undefined) {
+        // probably it's a bug
+        return
+    }
+    const suppressionBlock = getYamlFromNode(suppressionNode)
     const updatedSuppressionBlock = {
         ...suppressionBlock,
         directive: [...suppressionBlock.directive, item]
@@ -115,9 +124,14 @@ export const hasSuppressionBlock = (startNode: commonmark.Node) => {
     return !!mapping.Suppression
 }
 
+export interface CodeBlocksAndHeadings {
+    readonly Suppression?: commonmark.Node
+    readonly [key: string]: commonmark.Node|undefined
+}
+
 export const getCodeBlocksAndHeadings = (
     startNode: commonmark.Node
-): { [key: string]: commonmark.Node } => {
+): CodeBlocksAndHeadings => {
     return getAllCodeBlockNodes(startNode).reduce(
         (acc, curr) => {
             const headingNode = nodeHeading(curr)
