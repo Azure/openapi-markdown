@@ -63,3 +63,5 @@ typings/
 *.js
 *.d.ts
 *.map
+
+.vs/

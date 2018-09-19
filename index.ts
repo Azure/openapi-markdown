@@ -7,7 +7,8 @@ export {
     stringToTree,
     ReadMeManipulator,
     SuppressionItem,
-    hasSuppressionBlock
+    hasSuppressionBlock,
+    getCodeBlocksAndHeadings,
 } from "./readMeManipulator"
 export { ReadMeBuilder } from "./readMeBuilder"
 export { base64ToString, stringToBase64 } from "./gitHubUtils"
