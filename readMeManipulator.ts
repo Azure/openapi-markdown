@@ -91,12 +91,7 @@ export const addSuppression = (
     updateYamlForNode(suppressionNode, updatedSuppressionBlock)
 }
 
-export const stringToTree = (str: string): commonmark.Node => {
-    const reader = new commonmark.Parser()
-    return reader.parse(str)
-}
-
-export const base64ToTree = (base: string): MarkDownEx => {
+export const base64ToMarkDownEx = (base: string): MarkDownEx => {
     const str = base64ToString(base)
     return parse(str)
 }

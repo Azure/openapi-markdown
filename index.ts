@@ -3,8 +3,7 @@
 
 export {
     addSuppression,
-    base64ToTree,
-    stringToTree,
+    base64ToMarkDownEx,
     ReadMeManipulator,
     SuppressionItem,
     hasSuppressionBlock,
