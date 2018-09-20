@@ -15,6 +15,10 @@ export interface SuppressionItem {
     from: string
 }
 
+export interface Suppression {
+    directive: SuppressionItem[];
+}
+
 /**
  * Provides operations that can be applied to readme files
  */
