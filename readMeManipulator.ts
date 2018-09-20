@@ -8,11 +8,16 @@ import * as yaml from "js-yaml"
 import { base64ToString } from "./gitHubUtils"
 import { MarkDownEx, markDownExToString, parse } from "@ts-common/commonmark-to-markdown"
 
+/**
+ * Examples:
+ * - https://github.com/Azure/azure-rest-api-specs/blob/4c2be7a9983963a75e15c579e4fc8d17e547ea69/specification/guestconfiguration/resource-manager/readme.md#suppression
+ * - https://github.com/Azure/azure-rest-api-specs/blob/32b0d873aa851d456dfde7d6ba1d89ff33f897f0/specification/azsadmin/resource-manager/user-subscriptions/readme.md#suppression
+ */
 export interface SuppressionItem {
     suppress: string
     reason?: string
-    where: string
-    from: string
+    where: string|Readonly<string>
+    from?: string
 }
 
 export interface Suppression {
