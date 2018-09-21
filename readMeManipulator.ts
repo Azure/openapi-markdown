@@ -105,7 +105,7 @@ export const base64ToMarkDownEx = (base: string): MarkDownEx => {
     return parse(str)
 }
 
-const getYamlFromNode = (node: commonmark.Node) => {
+export const getYamlFromNode = (node: commonmark.Node) => {
     const infoYaml: any = yaml.load(node.literal!)
     return infoYaml
 }
