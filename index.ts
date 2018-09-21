@@ -6,6 +6,7 @@ export {
     base64ToMarkDownEx,
     ReadMeManipulator,
     SuppressionItem,
+    Suppression,
     hasSuppressionBlock,
     getCodeBlocksAndHeadings,
     getYamlFromNode,
