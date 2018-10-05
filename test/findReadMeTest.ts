@@ -5,16 +5,25 @@ import { findReadMe } from "../findReadMe"
 import * as assert from "assert"
 
 describe("findReadMe()", () => {
-    it("./", () => {
-        const readMePath = findReadMe("./")
+    it("./", async () => {
+        const readMePath = await findReadMe("./")
         assert.notStrictEqual(readMePath, undefined)
     })
-    it("test/", () => {
-        const readMePath = findReadMe("./test")
+    it("test/", async () => {
+        const readMePath = await findReadMe("./test")
         assert.notStrictEqual(readMePath, undefined)
     })
-    it("/", () => {
-        const readMePath = findReadMe("/")
+    it("/", async () => {
+        const readMePath = await findReadMe("/")
         assert.strictEqual(readMePath, undefined)
+    })
+    it("url", async () => {
+        const url =
+            "https://github.com/Azure/azure-rest-api-specs/blob/master/specification/network/resource-manager/Microsoft.Network/stable/2018-08-01"
+        const readMePath = await findReadMe(url)
+        assert.strictEqual(
+            readMePath,
+            "https://github.com/Azure/azure-rest-api-specs/blob/master/specification/network/resource-manager/readme.md"
+        )
     })
 })
