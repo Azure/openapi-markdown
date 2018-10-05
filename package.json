@@ -15,7 +15,6 @@
     "*.d.ts.map",
     "*.ts"
   ],
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ts-common/azure-openapi-markdown.git"
@@ -46,8 +45,8 @@
   },
   "nyc": {
     "reporter": [
-        "lcov",
-        "text"
+      "lcov",
+      "text"
     ]
   },
   "types": "index.d.ts",
