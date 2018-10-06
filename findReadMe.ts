@@ -16,7 +16,7 @@ const protocolSeparator = "://"
 
 const toUrlString = (url: Url) => url.protocol + protocolSeparator + url.path
 
-const urlParse = (dir: string): Url|undefined => {
+export const urlParse = (dir: string): Url|undefined => {
     const split = dir.split(protocolSeparator)
     return split.length === 2 ? {
         protocol: split[0],
@@ -37,7 +37,7 @@ const pathJoin = (dir: string, value: string): string => {
         path.join(dir, value)
 }
 
-const httpGet = (url: string): Promise<IncomingMessage> =>
+export const httpsGet = (url: string): Promise<IncomingMessage> =>
     new Promise(resolve => https.get(url, resolve))
 
 const fileExists = async (dir: string): Promise<boolean> =>
@@ -45,7 +45,7 @@ const fileExists = async (dir: string): Promise<boolean> =>
 
 const fsExists = async (dir: string): Promise<boolean> => {
     if (urlParse(dir) !== undefined) {
-        const result = await httpGet(dir)
+        const result = await httpsGet(dir)
         return result.statusCode === 200
     } else {
         return fileExists(dir)
