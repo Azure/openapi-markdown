@@ -24,6 +24,33 @@ export const urlParse = (dir: string): Url|undefined => {
     } : undefined
 }
 
+const fsReadFile = (pathStr: string): Promise<Buffer> =>
+  new Promise((resolve, reject) => fs.readFile(
+    pathStr,
+    (err, data) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(data)
+    }))
+
+const httpsGetBody = async (pathStr: string): Promise<string> => {
+    const message = await httpsGet(pathStr)
+    return new Promise<string>((resolve, reject) => {
+        let body = ""
+        message.on("data", chunk => body += chunk)
+        message.on("end", () => resolve(body))
+        message.on("error", err => reject(err))
+    })
+}
+
+export const readFile = async (pathStr: string): Promise<string> => {
+    const result = urlParse(pathStr)
+    return result === undefined ?
+        (await fsReadFile(pathStr)).toString() :
+        await httpsGetBody(pathStr)
+}
+
 const pathResolve = (dir: string): string =>
     urlParse(dir) !== undefined ? dir : path.resolve(dir)
 
@@ -38,7 +65,7 @@ const pathJoin = (dir: string, value: string): string => {
 }
 
 export const httpsGet = (url: string): Promise<IncomingMessage> =>
-    new Promise(resolve => https.get(url, resolve))
+    new Promise((resolve, reject) => https.get(url, resolve).on("error", error => reject(error)))
 
 const fileExists = async (dir: string): Promise<boolean> =>
     new Promise<boolean>(resolve => fs.exists(dir, resolve))
@@ -52,6 +79,23 @@ const fsExists = async (dir: string): Promise<boolean> => {
     }
 }
 
+const pathDirName = (dir: string): string => {
+    const url = urlParse(dir)
+    if (url === undefined) {
+        return path.dirname(dir)
+    }
+    const split = url.path.split("/")
+    return toUrlString({
+        protocol: url.protocol,
+        path: split.length <= 1 ? url.path : it.join(it.dropRight(split), "/")
+    })
+}
+
+/**
+ * It may throw an exception if `dir` is URL and network is not available.
+ *
+ * @param dir
+ */
 export const findReadMe = async (dir: string): Promise<string | undefined> => {
     dir = pathResolve(dir)
     while (true) {
@@ -59,7 +103,7 @@ export const findReadMe = async (dir: string): Promise<string | undefined> => {
         if (await fsExists(fileName)) {
             return fileName
         }
-        const newDir = path.dirname(dir)
+        const newDir = pathDirName(dir)
         if (newDir === dir) {
             return undefined
         }
