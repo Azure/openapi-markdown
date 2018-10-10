@@ -13,4 +13,4 @@ export {
 } from "./readMeManipulator"
 export { ReadMeBuilder } from "./readMeBuilder"
 export { base64ToString, stringToBase64 } from "./gitHubUtils"
-export { findReadMe, urlParse, httpsGet, readFile } from "./findReadMe"
+export { findReadMe } from "./findReadMe"
