@@ -59,4 +59,9 @@ typings/
 
 # next.js build output
 .next
-/.vs
+
+*.js
+*.d.ts
+*.map
+
+.vs/
