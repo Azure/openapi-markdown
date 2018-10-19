@@ -11,3 +11,8 @@ steps:
 - script: |
     npm install
     npm test
+
+- task: PublishTestResults@2
+  inputs:
+    testRunner: JUnit
+    testResultsFiles: ./test-results.xml
