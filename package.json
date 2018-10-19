@@ -49,6 +49,7 @@
     "reporter": [
       "lcov",
       "text",
+      "html",
       "cobertura"
     ]
   },
