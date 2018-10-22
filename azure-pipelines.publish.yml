@@ -10,7 +10,4 @@ steps:
 
 - script: |
     npm install
-
-- task: Npm@1
-  inputs:
-    command: 'publish --access=public'
+    npm publish --access=public
