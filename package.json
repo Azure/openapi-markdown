@@ -1,5 +1,5 @@
 {
-  "name": "@azure/azure-openapi-markdown",
+  "name": "@azure/openapi-markdown",
   "version": "0.4.2",
   "description": "Azure OpenAPI MarkDown",
   "scripts": {
@@ -18,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Azure/azure-openapi-markdown.git"
+    "url": "git+https://github.com/Azure/openapi-markdown.git"
   },
   "keywords": [
     "azure",
@@ -28,9 +28,9 @@
   "author": "Microsoft",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Azure/azure-openapi-markdown/issues"
+    "url": "https://github.com/Azure/openapi-markdown/issues"
   },
-  "homepage": "https://github.com/Azure/azure-openapi-markdown#readme",
+  "homepage": "https://github.com/Azure/openapi-markdown#readme",
   "devDependencies": {
     "@types/chai": "^4.1.6",
     "@types/chai-as-promised": "^7.1.0",
