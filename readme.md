@@ -1,6 +1,4 @@
-# azure-openapi-markdown
-
-Azure OpenAPI MarkDown
+# Azure OpenAPI MarkDown
 
 ## Contributing
 
