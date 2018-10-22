@@ -13,4 +13,4 @@ steps:
 
 - task: Npm@1
   inputs:
-    command: 'publish --access=pulic'
+    command: 'publish --access=public'
