@@ -10,4 +10,9 @@ steps:
 
 - script: |
     npm install
-    npm publish --access=public
+
+- task: Npm@1
+  inputs:
+    command: 'publish --access=pulic'
+
+
