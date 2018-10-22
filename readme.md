@@ -1,5 +1,7 @@
 # Azure OpenAPI MarkDown
 
+[![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/Azure.openapi-markdown)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=10218)
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
