@@ -1,6 +1,6 @@
 # Azure OpenAPI MarkDown
 
-[![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/Azure.openapi-markdown)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=10218)
+[![Build Status](https://dev.azure.com/azure-public/adx/_apis/build/status/public.Azure.openapi-markdown)](https://dev.azure.com/azure-public/adx/_build/latest?definitionId=4)
 
 ## Contributing
 
