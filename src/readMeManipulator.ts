@@ -17,7 +17,7 @@ export interface SuppressionItem {
     suppress: string
     reason?: string
     where: string|Readonly<string>
-    from?: string
+    from?: string|Readonly<string>
 }
 
 export interface Suppression {
