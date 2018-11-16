@@ -16,8 +16,8 @@ import { MarkDownEx, markDownExToString, parse } from "@ts-common/commonmark-to-
 export interface SuppressionItem {
     suppress: string
     reason?: string
-    where: string|Readonly<string>
-    from?: string|Readonly<string>
+    where: string|ReadonlyArray<string>
+    from?: string|ReadonlyArray<string>
 }
 
 export interface Suppression {
