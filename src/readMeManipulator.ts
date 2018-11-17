@@ -1,6 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
-
 import * as commonmark from "commonmark"
 import { ReadMeBuilder } from "./readMeBuilder"
 import { Logger } from "./logger"
@@ -24,6 +23,10 @@ export interface Suppression {
     directive: SuppressionItem[];
 }
 
+export interface TagSettings {
+    readonly "input-file": ReadonlyArray<string>;
+}
+
 /**
  * Provides operations that can be applied to readme files
  */
@@ -44,6 +47,7 @@ export class ReadMeManipulator {
             this.logger.error(`Couldn't parse code block`)
             throw new Error("")
         }
+        
         const latestDefinition = yaml.load(lh.literal!) as
             | undefined
             | { tag: string }
@@ -80,8 +84,53 @@ export class ReadMeManipulator {
     public addSuppressionBlock(readme: string) {
         return `${readme}\n\n${this.readMeBuilder.getSuppressionSection()}`
     }
+
+
+    /**
+     * This function takes a markdown document and a list of file paths and
+     * returns the list of tags that reference these file paths. It is meant to
+     * work like https://github.com/Azure/azure-rest-api-specs/blob/master/test/linter.js
+     */
+    public getTagsForFilesChanged(markDownEx: MarkDownEx, specsChanged: ReadonlyArray<string>): ReadonlyArray<string> {
+        const codeBlocks = getTagsToSettingsMapping(markDownEx.markDown);
+        const tagsAffected = new Set<string>();
+
+        for (const [tag, settings] of Object.entries(codeBlocks)) {
+            // for every file in settings object, see if it matches one of the
+            // paths changed
+            const filesTouchedInTag =
+                specsChanged.filter(spec => settings["input-file"]
+                    .some(inputFile => spec.includes(inputFile)))
+
+            if (filesTouchedInTag.length > 0) {
+                tagsAffected.add(tag)
+            }
+        }
+        return [...tagsAffected]
+    }
 }
 
+const isTagSettings = (obj: object | undefined): obj is TagSettings =>
+  obj !== undefined && "input-file" in obj;
+
+const getTagsToSettingsMapping = (
+  startNode: commonmark.Node
+): { readonly [keg: string]: TagSettings } =>
+  getAllCodeBlockNodes(startNode).reduce((accumulator, node) => {
+    if (node && node.literal && node.info) {
+      const settings = yaml.load(node.literal);
+      // tag matching from https://github.com/Azure/azure-rest-api-specs/blob/45e82e67d42ee347edbdb8b15807473b5aaf3a06/test/linter.js#L37
+      const matchTag = /\$\(tag\)[^'"]*(?:['"](.*?)['"])/;
+      const matches = matchTag.exec(node.info);
+
+      if (isTagSettings(settings) && matches) {
+        const [, tag] = matches;
+        return { ...accumulator, [tag]: settings };
+      }
+    }
+    return accumulator;
+  }, {});
+  
 export const addSuppression = (
     startNode: commonmark.Node,
     item: SuppressionItem
