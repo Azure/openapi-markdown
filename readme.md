@@ -1,6 +1,6 @@
 # Azure OpenAPI MarkDown
 
-[![Build Status](https://dev.azure.com/azure-public/adx/_apis/build/status/public.Azure.openapi-markdown)](https://dev.azure.com/azure-public/adx/_build/latest?definitionId=4)
+[![npm version](https://badge.fury.io/js/%40azure%2Fopenapi-markdown.svg)](https://badge.fury.io/js/%40azure%2Fopenapi-markdown) [![Build Status](https://dev.azure.com/azure-public/adx/_apis/build/status/public.Azure.openapi-markdown)](https://dev.azure.com/azure-public/adx/_build/latest?definitionId=4)
 
 ## Contributing
 
