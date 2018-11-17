@@ -24,7 +24,7 @@ export interface Suppression {
 }
 
 export interface TagSettings {
-    "input-file": string[];
+    readonly "input-file": ReadonlyArray<string>;
 }
 
 /**
@@ -47,6 +47,7 @@ export class ReadMeManipulator {
             this.logger.error(`Couldn't parse code block`)
             throw new Error("")
         }
+        
         const latestDefinition = yaml.load(lh.literal!) as
             | undefined
             | { tag: string }
@@ -90,13 +91,11 @@ export class ReadMeManipulator {
      * returns the list of tags that reference these file paths. It is meant to
      * work like https://github.com/Azure/azure-rest-api-specs/blob/master/test/linter.js
      */
-    public getTagsForFilesChanged(markDownEx: MarkDownEx, specsChanged: string[]): string[] {
+    public getTagsForFilesChanged(markDownEx: MarkDownEx, specsChanged: ReadonlyArray<string>): ReadonlyArray<string> {
         const codeBlocks = getTagsToSettingsMapping(markDownEx.markDown);
         const tagsAffected = new Set<string>();
 
-        for (const tag of Object.keys(codeBlocks)) {
-            const settings = codeBlocks[tag]
-
+        for (const [tag, settings] of Object.entries(codeBlocks)) {
             // for every file in settings object, see if it matches one of the
             // paths changed
             const filesTouchedInTag =
@@ -111,11 +110,12 @@ export class ReadMeManipulator {
     }
 }
 
-const isTagSettings = (obj: any): obj is TagSettings => obj && "input-file" in obj
+const isTagSettings = (obj: object | undefined): obj is TagSettings =>
+  obj !== undefined && "input-file" in obj;
 
 const getTagsToSettingsMapping = (
   startNode: commonmark.Node
-): { [keg: string]: TagSettings } =>
+): { readonly [keg: string]: TagSettings } =>
   getAllCodeBlockNodes(startNode).reduce((accumulator, node) => {
     if (node && node.literal && node.info) {
       const settings = yaml.load(node.literal);
