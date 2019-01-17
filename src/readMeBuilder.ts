@@ -4,7 +4,7 @@
 import * as yaml from "js-yaml"
 
 export class ReadMeBuilder {
-    public getVersionDefinition = (yamlBody: any, tag: string) => `
+    public readonly getVersionDefinition = (yamlBody: any, tag: string) => `
 ### Tag: ${tag}
 
 These settings apply only when \`--tag=${tag}\` is specified on the command line.

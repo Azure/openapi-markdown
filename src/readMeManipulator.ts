@@ -6,6 +6,8 @@ import { Logger } from "./logger"
 import * as yaml from "js-yaml"
 import { base64ToString } from "./gitHubUtils"
 import { MarkDownEx, markDownExToString, parse } from "@ts-common/commonmark-to-markdown"
+import * as sm from "@ts-common/string-map"
+import * as it from "@ts-common/iterator"
 
 /**
  * Examples:
@@ -13,14 +15,15 @@ import { MarkDownEx, markDownExToString, parse } from "@ts-common/commonmark-to-
  * - https://github.com/Azure/azure-rest-api-specs/blob/32b0d873aa851d456dfde7d6ba1d89ff33f897f0/specification/azsadmin/resource-manager/user-subscriptions/readme.md#suppression
  */
 export interface SuppressionItem {
-    suppress: string
-    reason?: string
-    where: string|ReadonlyArray<string>
-    from?: string|ReadonlyArray<string>
+    readonly suppress: string
+    readonly reason?: string
+    readonly where: string|ReadonlyArray<string>
+    readonly from?: string|ReadonlyArray<string>
+    readonly message?: string|ReadonlyArray<string>
 }
 
 export interface Suppression {
-    directive: SuppressionItem[];
+    readonly directive: SuppressionItem[];
 }
 
 export interface TagSettings {
@@ -36,7 +39,7 @@ export class ReadMeManipulator {
     /**
      * Updates the latest version tag of a readme
      */
-    public updateLatestTag(markDownEx: MarkDownEx, newTag: string): string {
+    public readonly updateLatestTag = (markDownEx: MarkDownEx, newTag: string): string => {
         const startNode = markDownEx.markDown
         const codeBlockMap = getCodeBlocksAndHeadings(startNode)
 
@@ -47,7 +50,7 @@ export class ReadMeManipulator {
             this.logger.error(`Couldn't parse code block`)
             throw new Error("")
         }
-        
+
         const latestDefinition = yaml.load(lh.literal!) as
             | undefined
             | { tag: string }
@@ -66,11 +69,11 @@ export class ReadMeManipulator {
         return markDownExToString(markDownEx)
     }
 
-    public insertTagDefinition(
+    public readonly insertTagDefinition = (
         readmeContent: string,
         tagFiles: string[],
         newTag: string
-    ) {
+    ) => {
         const newTagDefinitionYaml = createTagDefinitionYaml(tagFiles)
 
         const toSplice = this.readMeBuilder.getVersionDefinition(
@@ -81,9 +84,8 @@ export class ReadMeManipulator {
         return spliceIntoTopOfVersions(readmeContent, toSplice)
     }
 
-    public addSuppressionBlock(readme: string) {
-        return `${readme}\n\n${this.readMeBuilder.getSuppressionSection()}`
-    }
+    public readonly addSuppressionBlock = (readme: string) =>
+        `${readme}\n\n${this.readMeBuilder.getSuppressionSection()}`
 
 
     /**
@@ -91,16 +93,19 @@ export class ReadMeManipulator {
      * returns the list of tags that reference these file paths. It is meant to
      * work like https://github.com/Azure/azure-rest-api-specs/blob/master/test/linter.js
      */
-    public getTagsForFilesChanged(markDownEx: MarkDownEx, specsChanged: ReadonlyArray<string>): ReadonlyArray<string> {
+    public readonly getTagsForFilesChanged = (
+        markDownEx: MarkDownEx,
+        specsChanged: ReadonlyArray<string>
+    ): ReadonlyArray<string> => {
         const codeBlocks = getTagsToSettingsMapping(markDownEx.markDown);
         const tagsAffected = new Set<string>();
 
-        for (const [tag, settings] of Object.entries(codeBlocks)) {
+        for (const [tag, settings] of sm.entries(codeBlocks)) {
             // for every file in settings object, see if it matches one of the
             // paths changed
-            const filesTouchedInTag =
-                specsChanged.filter(spec => settings["input-file"]
-                    .some(inputFile => spec.includes(inputFile)))
+            const filesTouchedInTag = specsChanged.filter(
+                spec => settings["input-file"].some(inputFile => spec.includes(inputFile))
+            )
 
             if (filesTouchedInTag.length > 0) {
                 tagsAffected.add(tag)
@@ -111,26 +116,29 @@ export class ReadMeManipulator {
 }
 
 const isTagSettings = (obj: object | undefined): obj is TagSettings =>
-  obj !== undefined && "input-file" in obj;
+    obj !== undefined && "input-file" in obj;
 
-const getTagsToSettingsMapping = (
-  startNode: commonmark.Node
-): { readonly [keg: string]: TagSettings } =>
-  getAllCodeBlockNodes(startNode).reduce((accumulator, node) => {
-    if (node && node.literal && node.info) {
-      const settings = yaml.load(node.literal);
-      // tag matching from https://github.com/Azure/azure-rest-api-specs/blob/45e82e67d42ee347edbdb8b15807473b5aaf3a06/test/linter.js#L37
-      const matchTag = /\$\(tag\)[^'"]*(?:['"](.*?)['"])/;
-      const matches = matchTag.exec(node.info);
+const getTagsToSettingsMapping = (startNode: commonmark.Node): sm.StringMap<TagSettings> =>
+    it.fold(
+        getAllCodeBlockNodes(startNode),
+        (accumulator, node) => {
+            if (node && node.literal && node.info) {
+                const settings = yaml.load(node.literal);
+                // tag matching from
+                // https://github.com/Azure/azure-rest-api-specs/blob/45e82e67d42ee347edbdb8b15807473b5aaf3a06/test/linter.js#L37
+                const matchTag = /\$\(tag\)[^'"]*(?:['"](.*?)['"])/;
+                const matches = matchTag.exec(node.info);
 
-      if (isTagSettings(settings) && matches) {
-        const [, tag] = matches;
-        return { ...accumulator, [tag]: settings };
-      }
-    }
-    return accumulator;
-  }, {});
-  
+                if (isTagSettings(settings) && matches) {
+                    const [, tag] = matches;
+                    return { ...accumulator, [tag]: settings };
+                }
+            }
+            return accumulator;
+        },
+        {}
+    );
+
 export const addSuppression = (
     startNode: commonmark.Node,
     item: SuppressionItem
@@ -184,8 +192,9 @@ export interface CodeBlocksAndHeadings {
 
 export const getCodeBlocksAndHeadings = (
     startNode: commonmark.Node
-): CodeBlocksAndHeadings => {
-    return getAllCodeBlockNodes(startNode).reduce(
+): CodeBlocksAndHeadings =>
+    it.fold(
+        getAllCodeBlockNodes(startNode),
         (acc, curr) => {
             const headingNode = nodeHeading(curr)
 
@@ -203,7 +212,6 @@ export const getCodeBlocksAndHeadings = (
         },
         {}
     )
-}
 
 const getHeadingLiteral = (heading: commonmark.Node): string => {
     const headingNode = walkToNode(
@@ -214,18 +222,17 @@ const getHeadingLiteral = (heading: commonmark.Node): string => {
     return headingNode && headingNode.literal ? headingNode.literal : ""
 }
 
-const getAllCodeBlockNodes = (startNode: commonmark.Node) => {
-    const walker = startNode.walker()
-    const result: commonmark.Node[] = []
-    while (true) {
-        const a = walkToNode(walker, n => n.type === "code_block")
-        if (!a) {
-            break
+const getAllCodeBlockNodes = (startNode: commonmark.Node) =>
+    it.iterable(function *() {
+        const walker = startNode.walker()
+        while (true) {
+            const a = walkToNode(walker, n => n.type === "code_block")
+            if (!a) {
+                break
+            }
+            yield a
         }
-        result.push(a)
-    }
-    return result
-}
+    })
 
 const nodeHeading = (startNode: commonmark.Node): commonmark.Node | null => {
     let resultNode: commonmark.Node | null = startNode
