@@ -19,7 +19,7 @@ export interface SuppressionItem {
     readonly reason?: string
     readonly where: string|ReadonlyArray<string>
     readonly from?: string|ReadonlyArray<string>
-    readonly message?: string|ReadonlyArray<string>
+    readonly "text-matches"?: string
 }
 
 export interface Suppression {
