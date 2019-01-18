@@ -118,7 +118,9 @@ export class ReadMeManipulator {
 const isTagSettings = (obj: object | undefined): obj is TagSettings =>
     obj !== undefined && "input-file" in obj;
 
-const getTagsToSettingsMapping = (startNode: commonmark.Node): sm.StringMap<TagSettings> =>
+const getTagsToSettingsMapping = (
+    startNode: commonmark.Node
+): { readonly [keg: string]: TagSettings|undefined } =>
     it.fold(
         getAllCodeBlockNodes(startNode),
         (accumulator, node) => {
