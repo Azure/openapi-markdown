@@ -19,6 +19,14 @@ export const findReadMe = async (dir: string): Promise<string | undefined> => {
         if (newDir === dir) {
             return undefined
         }
+        const url = vfs.urlParse(newDir)
+        if (url !== undefined) {
+            const pathSplit = url.path.split("/")
+            if (pathSplit.length === 2 && pathSplit[0] === "github.com") {
+                // return undefined if it's a GitHub organization instead of a repository
+                return undefined
+            }
+        }
         dir = newDir
     }
 }
