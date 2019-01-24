@@ -113,6 +113,18 @@ export class ReadMeManipulator {
         }
         return [...tagsAffected]
     }
+
+    public readonly getAllTags = (
+        markDownEx: MarkDownEx
+    ): ReadonlyArray<string> => {
+        const codeBlocks = getTagsToSettingsMapping(markDownEx.markDown);
+        const tags = new Set<string>();
+
+        for (const [tag] of sm.entries(codeBlocks)) {
+            tags.add(tag);
+        }
+        return [...tags]
+    }
 }
 
 const isTagSettings = (obj: object | undefined): obj is TagSettings =>
