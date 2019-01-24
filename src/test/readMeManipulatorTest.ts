@@ -50,6 +50,18 @@ const logger: Logger = {
   error: () => {}
 }
 
+describe("@fast ReadmeManipulator.getAllTags", () => {
+  it("should get all the tags from the given spec", async () => {
+    const rm = new ReadMeManipulator(logger, readmeBuilder);
+
+    const updated = rm.getAllTags(parsed);
+
+    chai.expect(updated).to.deep.equal([
+      "package-2017-10", "package-2017-04"
+    ]);
+  });
+});
+
 describe("@fast ReadmeManipulator.getTagsForFilesChanged", () => {
   it("should identify tags that are related to given spec", async () => {
     const rm = new ReadMeManipulator(logger, readmeBuilder);
