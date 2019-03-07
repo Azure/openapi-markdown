@@ -10,7 +10,9 @@ export {
     hasSuppressionBlock,
     getCodeBlocksAndHeadings,
     getYamlFromNode,
+    getTagsToSettingsMapping
 } from "./readMeManipulator"
+export { Logger } from "./logger"
 export { ReadMeBuilder } from "./readMeBuilder"
 export { base64ToString, stringToBase64 } from "./gitHubUtils"
 export { findReadMe } from "./findReadMe"
