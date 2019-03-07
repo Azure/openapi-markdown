@@ -127,17 +127,22 @@ export class ReadMeManipulator {
     }
 }
 
-const isTagSettings = (obj: object | undefined): obj is TagSettings =>
-    obj !== undefined && "input-file" in obj;
+const isTagSettings = (obj: unknown): obj is TagSettings =>
+    typeof obj === "object" && obj !== null && "input-file" in obj;
 
-const getTagsToSettingsMapping = (
+export const getTagsToSettingsMapping = (
     startNode: commonmark.Node
 ): { readonly [keg: string]: TagSettings|undefined } =>
     it.fold(
         getAllCodeBlockNodes(startNode),
         (accumulator, node) => {
             if (node && node.literal && node.info) {
-                const settings = yaml.load(node.literal);
+                let settings: unknown
+                try {
+                    settings = yaml.safeLoad(node.literal, { });
+                } catch (e) {
+                    return accumulator
+                }
                 // tag matching from
                 // https://github.com/Azure/azure-rest-api-specs/blob/45e82e67d42ee347edbdb8b15807473b5aaf3a06/test/linter.js#L37
                 const matchTag = /\$\(tag\)[^'"]*(?:['"](.*?)['"])/;
