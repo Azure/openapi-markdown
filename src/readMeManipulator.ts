@@ -133,8 +133,7 @@ const isTagSettings = (obj: unknown): obj is TagSettings =>
 export const getTagsToSettingsMapping = (
     startNode: commonmark.Node
 ): { readonly [keg: string]: TagSettings|undefined } =>
-    it.fold(
-        getAllCodeBlockNodes(startNode),
+    getAllCodeBlockNodes(startNode).fold(
         (accumulator, node) => {
             if (node && node.literal && node.info) {
                 let settings: unknown
@@ -157,6 +156,9 @@ export const getTagsToSettingsMapping = (
         },
         {}
     );
+
+export const getInputFiles = (startNode: commonmark.Node) : it.IterableEx<string> =>
+    sm.values(getTagsToSettingsMapping(startNode)).flatMap(v => v["input-file"])
 
 export const addSuppression = (
     startNode: commonmark.Node,
@@ -212,8 +214,7 @@ export interface CodeBlocksAndHeadings {
 export const getCodeBlocksAndHeadings = (
     startNode: commonmark.Node
 ): CodeBlocksAndHeadings =>
-    it.fold(
-        getAllCodeBlockNodes(startNode),
+    getAllCodeBlockNodes(startNode).fold(
         (acc, curr) => {
             const headingNode = nodeHeading(curr)
 
