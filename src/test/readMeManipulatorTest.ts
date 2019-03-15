@@ -7,7 +7,7 @@ import * as chai from "chai"
 import * as cm2md from "@ts-common/commonmark-to-markdown"
 
 import { ReadMeBuilder } from "../readMeBuilder"
-import { ReadMeManipulator, getCodeBlocksAndHeadings, addSuppression } from "../readMeManipulator"
+import { ReadMeManipulator, getCodeBlocksAndHeadings, addSuppression, getTagsToSettingsMapping, getInputFiles } from "../readMeManipulator"
 import { Logger } from '../logger';
 
 // const reader = new commonmark.Parser();
@@ -61,6 +61,34 @@ describe("@fast ReadmeManipulator.getAllTags", () => {
     ]);
   });
 });
+
+describe("@fast getTagsToSettingsMapping", () => {
+  it("should return a list of tags", () => {
+    const tagsForSettings = getTagsToSettingsMapping(parsed.markDown)
+    chai.expect(tagsForSettings).to.deep.equal({
+      "package-2017-04": {
+        "input-file": [
+          "Microsoft.Cdn/stable/2017-04-02/cdn.json"
+        ]
+      },
+      "package-2017-10": {
+        "input-file": [
+          "Microsoft.Cdn/stable/2017-10-12/cdn.json"
+        ]
+      }
+    })
+  })
+});
+
+describe("@fast getInputFiles", () => {
+  it("should return a list of files", () => {
+    const files = getInputFiles(parsed.markDown)
+    chai.expect(files.toArray()).to.deep.equal([
+      "Microsoft.Cdn/stable/2017-10-12/cdn.json",
+      "Microsoft.Cdn/stable/2017-04-02/cdn.json"
+    ])
+  })
+})
 
 describe("@fast ReadmeManipulator.getTagsForFilesChanged", () => {
   it("should identify tags that are related to given spec", async () => {

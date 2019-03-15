@@ -10,7 +10,8 @@ export {
     hasSuppressionBlock,
     getCodeBlocksAndHeadings,
     getYamlFromNode,
-    getTagsToSettingsMapping
+    getTagsToSettingsMapping,
+    getInputFiles
 } from "./readMeManipulator"
 export { Logger } from "./logger"
 export { ReadMeBuilder } from "./readMeBuilder"
