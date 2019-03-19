@@ -11,7 +11,8 @@ export {
     getCodeBlocksAndHeadings,
     getYamlFromNode,
     getTagsToSettingsMapping,
-    getInputFiles
+    getInputFiles,
+    inputFile,
 } from "./readMeManipulator"
 export { Logger } from "./logger"
 export { ReadMeBuilder } from "./readMeBuilder"
