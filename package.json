@@ -1,6 +1,6 @@
 {
   "name": "@azure/openapi-markdown",
-  "version": "0.7.8",
+  "version": "0.8.0",
   "description": "Azure OpenAPI MarkDown",
   "scripts": {
     "tsc": "tsc",

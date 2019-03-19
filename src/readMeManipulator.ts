@@ -27,7 +27,12 @@ export interface Suppression {
 }
 
 export interface TagSettings {
-    readonly "input-file": ReadonlyArray<string>;
+    readonly "input-file": ReadonlyArray<string> | string;
+}
+
+export const inputFile = (tagSettings: TagSettings) => {
+    const f = tagSettings["input-file"]
+    return typeof f === "string" ? [f] : f
 }
 
 /**
@@ -104,7 +109,7 @@ export class ReadMeManipulator {
             // for every file in settings object, see if it matches one of the
             // paths changed
             const filesTouchedInTag = specsChanged.filter(
-                spec => settings["input-file"].some(inputFile => spec.includes(inputFile))
+                spec => inputFile(settings).some(inputFile => spec.includes(inputFile))
             )
 
             if (filesTouchedInTag.length > 0) {
@@ -128,7 +133,9 @@ export class ReadMeManipulator {
 }
 
 const isTagSettings = (obj: unknown): obj is TagSettings =>
-    typeof obj === "object" && obj !== null && "input-file" in obj;
+    typeof obj === "object" &&
+    obj !== null &&
+    "input-file" in obj;
 
 export const getTagsToSettingsMapping = (
     startNode: commonmark.Node
@@ -158,7 +165,7 @@ export const getTagsToSettingsMapping = (
     );
 
 export const getInputFiles = (startNode: commonmark.Node) : it.IterableEx<string> =>
-    sm.values(getTagsToSettingsMapping(startNode)).flatMap(v => v["input-file"])
+    sm.values(getTagsToSettingsMapping(startNode)).flatMap(inputFile)
 
 export const addSuppression = (
     startNode: commonmark.Node,
