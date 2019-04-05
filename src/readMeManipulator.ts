@@ -17,17 +17,17 @@ import * as it from "@ts-common/iterator"
 export interface SuppressionItem {
     readonly suppress: string
     readonly reason?: string
-    readonly where: string|ReadonlyArray<string>
-    readonly from?: string|ReadonlyArray<string>
+    readonly where: string|readonly string[]
+    readonly from?: string|readonly string[]
     readonly "text-matches"?: string
 }
 
 export interface Suppression {
-    readonly directive: SuppressionItem[];
+    readonly directive: readonly SuppressionItem[];
 }
 
 export interface TagSettings {
-    readonly "input-file": ReadonlyArray<string> | string;
+    readonly "input-file": readonly string[] | string;
 }
 
 export const inputFile = (tagSettings: TagSettings) => {
@@ -76,7 +76,7 @@ export class ReadMeManipulator {
 
     public readonly insertTagDefinition = (
         readmeContent: string,
-        tagFiles: string[],
+        tagFiles: readonly string[],
         newTag: string
     ) => {
         const newTagDefinitionYaml = createTagDefinitionYaml(tagFiles)
@@ -100,8 +100,8 @@ export class ReadMeManipulator {
      */
     public readonly getTagsForFilesChanged = (
         markDownEx: MarkDownEx,
-        specsChanged: ReadonlyArray<string>
-    ): ReadonlyArray<string> => {
+        specsChanged: readonly string[]
+    ): readonly string[] => {
         const codeBlocks = getTagsToSettingsMapping(markDownEx.markDown);
         const tagsAffected = new Set<string>();
 
@@ -121,7 +121,7 @@ export class ReadMeManipulator {
 
     public readonly getAllTags = (
         markDownEx: MarkDownEx
-    ): ReadonlyArray<string> => {
+    ): readonly string[] => {
         const codeBlocks = getTagsToSettingsMapping(markDownEx.markDown);
         const tags = new Set<string>();
 
@@ -204,7 +204,7 @@ const spliceIntoTopOfVersions = (file: string, splice: string) => {
     return file.slice(0, index) + splice + file.slice(index)
 }
 
-const createTagDefinitionYaml = (files: string[]) => ({
+const createTagDefinitionYaml = (files: readonly string[]) => ({
     ["input-file"]: files
 })
 
