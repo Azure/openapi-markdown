@@ -100,7 +100,7 @@ describe("@fast getInputFilesForTag", () => {
 
   it("should return null if the tag doesn't exists", () => {
     const files = getInputFilesForTag(parsed.markDown, "package-1925-10")
-    chai.expect(files).to.be.null;
+    chai.expect(files).to.be.undefined;
   })
 })
 
