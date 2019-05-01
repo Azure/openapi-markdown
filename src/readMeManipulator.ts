@@ -171,12 +171,12 @@ export const getInputFiles = (startNode: commonmark.Node) : it.IterableEx<string
  * Get input files listed for a given tag
  * @returns array of file path or null if the tag doesn't exists
  */
-export const getInputFilesForTag = (startNode: commonmark.Node, tag: string): readonly string[] | null => {
+export const getInputFilesForTag = (startNode: commonmark.Node, tag: string): readonly string[] | undefined => {
     const tagMapping = getTagsToSettingsMapping(startNode);
     if(tagMapping[tag]) {
         return inputFile(tagMapping[tag]!);
     }
-    return null;
+    return undefined;
 }
 
 export const addSuppression = (
