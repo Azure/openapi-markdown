@@ -173,10 +173,8 @@ export const getInputFiles = (startNode: commonmark.Node) : it.IterableEx<string
  */
 export const getInputFilesForTag = (startNode: commonmark.Node, tag: string): readonly string[] | undefined => {
     const tagMapping = getTagsToSettingsMapping(startNode);
-    if(tagMapping[tag]) {
-        return inputFile(tagMapping[tag]!);
-    }
-    return undefined;
+    const foo = tagMapping[tag];
+    return foo !== undefined ? inputFile(foo) : undefined;
 }
 
 export const addSuppression = (
