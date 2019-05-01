@@ -167,6 +167,16 @@ export const getTagsToSettingsMapping = (
 export const getInputFiles = (startNode: commonmark.Node) : it.IterableEx<string> =>
     sm.values(getTagsToSettingsMapping(startNode)).flatMap(inputFile)
 
+/**
+ * Get input files listed for a given tag
+ * @returns array of file path or null if the tag doesn't exists
+ */
+export const getInputFilesForTag = (startNode: commonmark.Node, tag: string): readonly string[] | undefined => {
+    const tagMapping = getTagsToSettingsMapping(startNode);
+    const foo = tagMapping[tag];
+    return foo !== undefined ? inputFile(foo) : undefined;
+}
+
 export const addSuppression = (
     startNode: commonmark.Node,
     item: SuppressionItem

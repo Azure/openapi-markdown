@@ -12,6 +12,7 @@ export {
     getYamlFromNode,
     getTagsToSettingsMapping,
     getInputFiles,
+    getInputFilesForTag,
     inputFile,
 } from "./readMeManipulator"
 export { Logger } from "./logger"

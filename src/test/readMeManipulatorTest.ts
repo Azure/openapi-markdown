@@ -7,7 +7,7 @@ import * as chai from "chai"
 import * as cm2md from "@ts-common/commonmark-to-markdown"
 
 import { ReadMeBuilder } from "../readMeBuilder"
-import { ReadMeManipulator, getCodeBlocksAndHeadings, addSuppression, getTagsToSettingsMapping, getInputFiles } from "../readMeManipulator"
+import { ReadMeManipulator, getCodeBlocksAndHeadings, addSuppression, getTagsToSettingsMapping, getInputFiles, getInputFilesForTag } from "../readMeManipulator"
 import { Logger } from '../logger';
 
 // const reader = new commonmark.Parser();
@@ -87,6 +87,20 @@ describe("@fast getInputFiles", () => {
       "Microsoft.Cdn/stable/2017-10-12/cdn.json",
       "Microsoft.Cdn/stable/2017-04-02/cdn.json"
     ])
+  })
+})
+
+describe("@fast getInputFilesForTag", () => {
+  it("should return a list of files for the given tags", () => {
+    const files = getInputFilesForTag(parsed.markDown, "package-2017-10")
+    chai.expect(files).to.deep.equal([
+      "Microsoft.Cdn/stable/2017-10-12/cdn.json"
+    ])
+  })
+
+  it("should return null if the tag doesn't exists", () => {
+    const files = getInputFilesForTag(parsed.markDown, "package-1925-10")
+    chai.expect(files).to.be.undefined;
   })
 })
 
