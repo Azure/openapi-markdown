@@ -94,7 +94,7 @@ describe("@fast getInputFilesForTag", () => {
   it("should return a list of files for the given tags", () => {
     const files = getInputFilesForTag(parsed.markDown, "package-2017-10")
     chai.expect(files).to.deep.equal([
-      "Microsoft.Cdn/stable/2017-04-02/cdn.json"
+      "Microsoft.Cdn/stable/2017-10-12/cdn.json"
     ])
   })
 
