@@ -6,6 +6,7 @@
     "tsc": "tsc",
     "test": "jest",
     "test:watch": "jest --watch --coverage false",
+    "test:e2e": "jest --files *.e2e.ts",
     "prepack": "npm install && tsc"
   },
   "main": "dist/index.js",

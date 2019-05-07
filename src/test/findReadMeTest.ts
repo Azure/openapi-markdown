@@ -2,16 +2,9 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 import { findReadMe } from "../findReadMe"
-import * as vfs from "@ts-common/virtual-fs"
 
-const readmePaths = [
-    "https://github.com/Azure/azure-rest-api-specs/blob/master/specification/network/resource-manager/readme.md",
-    vfs.pathJoin(vfs.pathResolve("."), "readme.md"),
-]
-
-jest.spyOn(vfs, "exists").mockImplementation((filename: string)  => {
-    return Promise.resolve(readmePaths.includes(filename))
-})
+// Http calls to check if path exists take a while
+jest.setTimeout(30_000);
 
 describe("findReadMe()", () => {
     beforeEach(() => {
