@@ -1,9 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
-
-import "mocha"
-
-import * as chai from "chai"
 import * as cm2md from "@ts-common/commonmark-to-markdown"
 
 import { ReadMeBuilder } from "../readMeBuilder"
@@ -56,7 +52,7 @@ describe("@fast ReadmeManipulator.getAllTags", () => {
 
     const updated = rm.getAllTags(parsed);
 
-    chai.expect(updated).to.deep.equal([
+    expect(updated).toEqual([
       "package-2017-10", "package-2017-04"
     ]);
   });
@@ -65,7 +61,7 @@ describe("@fast ReadmeManipulator.getAllTags", () => {
 describe("@fast getTagsToSettingsMapping", () => {
   it("should return a list of tags", () => {
     const tagsForSettings = getTagsToSettingsMapping(parsed.markDown)
-    chai.expect(tagsForSettings).to.deep.equal({
+    expect(tagsForSettings).toEqual({
       "package-2017-04": {
         "input-file": [
           "Microsoft.Cdn/stable/2017-04-02/cdn.json"
@@ -83,7 +79,7 @@ describe("@fast getTagsToSettingsMapping", () => {
 describe("@fast getInputFiles", () => {
   it("should return a list of files", () => {
     const files = getInputFiles(parsed.markDown)
-    chai.expect(files.toArray()).to.deep.equal([
+    expect(files.toArray()).toEqual([
       "Microsoft.Cdn/stable/2017-10-12/cdn.json",
       "Microsoft.Cdn/stable/2017-04-02/cdn.json"
     ])
@@ -93,14 +89,14 @@ describe("@fast getInputFiles", () => {
 describe("@fast getInputFilesForTag", () => {
   it("should return a list of files for the given tags", () => {
     const files = getInputFilesForTag(parsed.markDown, "package-2017-10")
-    chai.expect(files).to.deep.equal([
+    expect(files).toEqual([
       "Microsoft.Cdn/stable/2017-10-12/cdn.json"
     ])
   })
 
   it("should return null if the tag doesn't exists", () => {
     const files = getInputFilesForTag(parsed.markDown, "package-1925-10")
-    chai.expect(files).to.be.undefined;
+    expect(files).toBe(undefined);
   })
 })
 
@@ -112,7 +108,7 @@ describe("@fast ReadmeManipulator.getTagsForFilesChanged", () => {
       "specifications/test/Microsoft.Cdn/stable/2017-10-12/cdn.json"
     ]);
 
-    chai.expect(updated).to.deep.equal(["package-2017-10"]);
+    expect(updated).toEqual(["package-2017-10"]);
   });
 
   it("should identify tags that are related to given specs", async () => {
@@ -123,7 +119,7 @@ describe("@fast ReadmeManipulator.getTagsForFilesChanged", () => {
       "specifications/test/Microsoft.Cdn/stable/2017-04-02/cdn.json"
     ]);
 
-    chai.expect(updated).to.deep.equal(["package-2017-10", "package-2017-04"]);
+    expect(updated).toEqual(["package-2017-10", "package-2017-04"]);
   });
 });
 
@@ -133,18 +129,16 @@ describe("@fast ReadmeManipulator.updateVersionTag", () => {
 
     const updated = rm.updateLatestTag(parsed, "package-2018-10");
 
-    chai.expect(updated).to.contain("tag: package-2018-10");
+    expect(updated).toContain("tag: package-2018-10");
   });
 
   it("should correctly update readme", async () => {
     const asa = await getCodeBlocksAndHeadings(parsed.markDown);
-    chai
-      .expect(asa)
-      .to.have.all.keys([
+    expect(Object.keys(asa)).toEqual(expect.arrayContaining([
         "Basic Information",
         "Tag: package-2017-04",
         "Tag: package-2017-10"
-      ]);
+      ]));
   });
 
   it("should correctly parse directive", async () => {
@@ -224,9 +218,9 @@ input-file:
 
     addSuppression(asdf.markDown, testSuppression);
     const asa = await cm2md.markDownExToString(asdf);
-    chai.expect(asa).to.include(testSuppression.suppress);
-    chai.expect(asa).to.include(testSuppression.reason);
-    chai.expect(asa).to.include(testSuppression.where[0]);
-    chai.expect(asa).to.include(testSuppression.where[1]);
+    expect(asa).toContain(testSuppression.suppress);
+    expect(asa).toContain(testSuppression.reason);
+    expect(asa).toContain(testSuppression.where[0]);
+    expect(asa).toContain(testSuppression.where[1]);
   });
 });
