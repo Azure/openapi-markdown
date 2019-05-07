@@ -22,11 +22,7 @@
     "type": "git",
     "url": "git+https://github.com/Azure/openapi-markdown.git"
   },
-  "keywords": [
-    "azure",
-    "openapi",
-    "markdown"
-  ],
+  "keywords": ["azure", "openapi", "markdown"],
   "author": "Microsoft",
   "license": "MIT",
   "bugs": {
@@ -46,11 +42,27 @@
     "typescript": "^3.4.2"
   },
   "nyc": {
-    "reporter": [
+    "reporter": ["text", "html", "cobertura"]
+  },
+  "jest": {
+    "transform": { "^.+\\.ts$": "ts-jest" },
+    "moduleFileExtensions": ["ts", "js", "json", "node"],
+    "moduleNameMapper": {},
+    "collectCoverage": true,
+    "collectCoverageFrom": ["src/**/*.ts", "!**/node_modules/**"],
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "cobertura",
       "text",
       "html",
-      "cobertura"
-    ]
+      "clover"
+    ],
+    "coveragePathIgnorePatterns": ["/node_modules/", ".*/test/.*"],
+    "globals": { "ts-jest": { "tsConfig": "tsconfig.json" } },
+    "testMatch": ["**/*Test.ts"],
+    "verbose": true,
+    "testEnvironment": "node"
   },
   "jest-junit": {
     "outputDirectory": ".",
