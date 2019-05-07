@@ -61,6 +61,7 @@ typings/
 .next
 
 *.js
+!jest.config.js
 *.d.ts
 *.map
 

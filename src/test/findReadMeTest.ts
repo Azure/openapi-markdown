@@ -2,34 +2,36 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 import { findReadMe } from "../findReadMe"
-import * as assert from "assert"
+
+// Http calls to check if path exists take a while
+jest.setTimeout(30_000);
 
 describe("findReadMe()", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    })
     it("./", async () => {
         const readMePath = await findReadMe("./")
-        assert.notStrictEqual(readMePath, undefined)
+        expect(readMePath).not.toBe(undefined)
     })
     it("test/", async () => {
         const readMePath = await findReadMe("./test")
-        assert.notStrictEqual(readMePath, undefined)
+        expect(readMePath).not.toBe(undefined)
     })
     it("/", async () => {
         const readMePath = await findReadMe("/")
-        assert.strictEqual(readMePath, undefined)
+        expect(readMePath).toBe(undefined)
     })
     it("url", async () => {
         const url =
             "https://github.com/Azure/azure-rest-api-specs/blob/master/specification/network/resource-manager/Microsoft.Network/stable/2018-08-01"
         const readMePath = await findReadMe(url)
-        assert.strictEqual(
-            readMePath,
-            "https://github.com/Azure/azure-rest-api-specs/blob/master/specification/network/resource-manager/readme.md"
-        )
+        expect(readMePath).toEqual("https://github.com/Azure/azure-rest-api-specs/blob/master/specification/network/resource-manager/readme.md")
     })
     it("url none", async () => {
         const url =
             "https://github.com/Azure/azure-rest-api-specs"
         const readMePath = await findReadMe(url)
-        assert.strictEqual(readMePath, undefined)
+        expect(readMePath).toBe(undefined)
     })
 })

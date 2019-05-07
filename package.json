@@ -4,7 +4,9 @@
   "description": "Azure OpenAPI MarkDown",
   "scripts": {
     "tsc": "tsc",
-    "test": "tsc && nyc mocha ./dist/test/*.js --timeout=100000 --reporter mocha-multi-reporters --reporter-options configFile=mocha-multi-reporters.json",
+    "test": "jest",
+    "test:watch": "jest --watch --coverage false",
+    "test:e2e": "jest --files *.e2e.ts",
     "prepack": "npm install && tsc"
   },
   "main": "dist/index.js",
@@ -35,15 +37,11 @@
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.0",
     "@types/commonmark": "^0.27.3",
+    "@types/jest": "^24.0.12",
     "@types/js-yaml": "^3.12.1",
-    "@types/mocha": "^5.2.6",
     "@types/node": "^10.12.18",
-    "chai": "^4.2.0",
-    "chai-as-promised": "^7.1.1",
-    "mocha": "^6.0.2",
-    "mocha-junit-reporter": "^1.21.0",
-    "mocha-multi-reporters": "^1.1.7",
-    "nyc": "^13.3.0",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2",
     "typescript": "^3.4.2"
   },
   "nyc": {
@@ -52,6 +50,49 @@
       "html",
       "cobertura"
     ]
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json",
+      "node"
+    ],
+    "moduleNameMapper": {},
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!**/node_modules/**"
+    ],
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "cobertura",
+      "text",
+      "html",
+      "clover"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      ".*/test/.*"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tsconfig.json"
+      }
+    },
+    "testMatch": [
+      "**/*Test.ts"
+    ],
+    "verbose": true,
+    "testEnvironment": "node"
+  },
+  "jest-junit": {
+    "outputDirectory": ".",
+    "output": "test-results.xml"
   },
   "dependencies": {
     "@ts-common/commonmark-to-markdown": "^1.2.0",
