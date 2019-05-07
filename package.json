@@ -22,7 +22,11 @@
     "type": "git",
     "url": "git+https://github.com/Azure/openapi-markdown.git"
   },
-  "keywords": ["azure", "openapi", "markdown"],
+  "keywords": [
+    "azure",
+    "openapi",
+    "markdown"
+  ],
   "author": "Microsoft",
   "license": "MIT",
   "bugs": {
@@ -37,19 +41,32 @@
     "@types/js-yaml": "^3.12.1",
     "@types/node": "^10.12.18",
     "jest": "^24.8.0",
-    "nyc": "^14.0.0",
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.2"
   },
   "nyc": {
-    "reporter": ["text", "html", "cobertura"]
+    "reporter": [
+      "text",
+      "html",
+      "cobertura"
+    ]
   },
   "jest": {
-    "transform": { "^.+\\.ts$": "ts-jest" },
-    "moduleFileExtensions": ["ts", "js", "json", "node"],
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json",
+      "node"
+    ],
     "moduleNameMapper": {},
     "collectCoverage": true,
-    "collectCoverageFrom": ["src/**/*.ts", "!**/node_modules/**"],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!**/node_modules/**"
+    ],
     "coverageReporters": [
       "json",
       "lcov",
@@ -58,9 +75,18 @@
       "html",
       "clover"
     ],
-    "coveragePathIgnorePatterns": ["/node_modules/", ".*/test/.*"],
-    "globals": { "ts-jest": { "tsConfig": "tsconfig.json" } },
-    "testMatch": ["**/*Test.ts"],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      ".*/test/.*"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tsconfig.json"
+      }
+    },
+    "testMatch": [
+      "**/*Test.ts"
+    ],
     "verbose": true,
     "testEnvironment": "node"
   },
