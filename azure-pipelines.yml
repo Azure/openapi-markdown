@@ -7,7 +7,7 @@ variables:
   Codeql.Enabled: true
 
 trigger:
-- master
+- main
 
 steps:
 
